@@ -29,3 +29,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 # INSTALAR LA PAGINACION
 npm install ngx-pagination --save
 
+# INSTALAR PARA LA FOTO
+npm install ngx-toastr --legacy-peer-deps
+npm install ngx-toastr --save
+
