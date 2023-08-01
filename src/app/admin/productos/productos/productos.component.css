@@ -1,0 +1,22 @@
+@font-face {
+    font-family: myFirstFont;
+  }
+  
+  #calc{
+    font-family:myFirstFont;
+    font-size: 250%;
+    text-align: right;
+    background-color: inherit;
+    border: none;
+    padding-left:20px;
+    padding-right:20px;
+    padding-bottom: 10px;
+  }
+  .personal-image {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .personal-image input[type="file"] {
+    display: none;
+  }

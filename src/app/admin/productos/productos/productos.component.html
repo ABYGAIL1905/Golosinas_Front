@@ -1,0 +1,136 @@
+<h1>LISTA</h1>
+
+<div class="container">
+    
+      <div class="card-header">
+        <h1>Productos</h1>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#materiaModal"
+        >
+          CREAR NUEVO
+        </button>
+      </div>
+      <div class="pagination-container">
+  <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+
+
+      <div class="tabla-contenedor">
+        <table class="table table-hover">
+          <thead>
+            <tr class="text-center">
+              <th>CODIGO</th>
+              <th>IMAGEN</th>
+              <th>NOMBRE</th>
+              <th>UNIDAD CAJA </th>
+              <th>PRECIO DISTRIBUIDOR</th>
+              <th>PRECIO MAYOR A 3</th>
+              <th>PRECIO DETALLISTA</th>
+              <th>PVP</th>
+              <th>CATEGORIA</th>
+              <th>ESTADO PRODUCTO</th>
+              <th>ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr  class="text-center" *ngFor="let item of producto | paginate: { itemsPerPage: 20, currentPage: currentPage }">
+              <td>{{ item.codigo_producto }}</td>
+              <td>{{ item.foto_producto }}</td>
+              <td>{{ item.nombre_producto }}</td>
+              <td>{{ item.unidad_caja }}</td>
+              <td>{{ item.precio_distribuidor }}</td>
+              <td> {{item.precio_mayor3}}</td>
+              <td> {{item.precio_detallista}}</td>
+              <td> {{item.precio_venta_publico}}</td>
+              <td> {{item.categoria.nombre_categoria}}</td>
+              <td> {{item.  estado_producto}}</td>
+             
+              <td>
+                <button  class="btn btn-warning">
+                  <span class="fa fa-edit"></span> Editar
+                </button>
+                <button class="btn btn-danger" style="margin-left: 10px;">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+
+    <div
+    
+      class="modal fade"
+      id="materiaModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h3 class="modal-title">
+              <i class="fa fa-info-circle"></i> Productos
+            </h3>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+         <!-- Resto de tu código HTML... -->
+<div class="modal-body">
+  <form [formGroup]="frmProducto" (ngSubmit)="nuevo()" id="formulario">
+    <div>
+      <label for="nombre">Nombre:</label>
+      <input
+        class="form-control"
+        formControlName="nombre_producto"
+        type="text"
+        id="nombre_producto"
+        name="nombre_producto"
+        style="margin-bottom: 10px"
+      />
+      <div class="alert alert-danger" *ngIf="frmProducto.controls['nombre_producto'].invalid && frmProducto.controls['nombre_producto'].touched">
+        <div *ngIf="frmProducto.controls['nombre_producto'].hasError('required')">Debe ingresar un nombre</div>
+      </div>
+    </div>
+    <div class="personal-image">
+      <label class="label" style="border: black">Foto
+        <input class="form-control" formControlName="foto_producto" type="file" accept="image/jpeg, image/jpg, image/png" (change)="subirFoto($event)" />
+        <figure class="personal-figure">
+          <img *ngIf="frmProducto.controls['foto_producto'].value" [src]="frmProducto.controls['foto_producto'].value" class="personal-avatar" alt="Foto Producto" />
+          <figcaption class="personal-figcaption">
+            <img src="./assets/img/camer.png" />
+          </figcaption>
+        </figure>
+      </label>
+    </div>
+  </form>
+  <div class="modal-footer">
+    <button type="button" form="formulario" class="btn btn-warning" data-bs-dismiss="modal">
+      Cancelar
+    </button>
+    <button type="submit" class="btn btn-primary" form="formulario" *ngIf="!produ.id_producto" data-bs-dismiss="modal" [disabled]="!frmProducto.valid || !frmProducto.controls['foto_producto'].value">
+      Agregar
+    </button>
+    <button class="btn btn-primary" *ngIf="produ.id_producto" data-bs-dismiss="modal" [disabled]="!frmProducto.valid">
+      Actualizar
+    </button>
+  </div>
+</div>
+<!-- Resto de tu código HTML... -->
+
+        </div>
+      </div>
+    </div>
+  </div> 
+  <!-- Resto de tu código HTML... -->
+
+

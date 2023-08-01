@@ -1,0 +1,53 @@
+<div class="container">
+    
+    <div class="card-header">
+      <h1>Productos</h1>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#materiaModal"
+      >
+        CREAR NUEVO
+      </button>
+    </div>
+    <div class="pagination-container">
+<pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+
+
+    <div class="tabla-contenedor">
+      <table class="table table-hover">
+        <thead>
+          <tr class="text-center">
+            <th>CODIGO</th>
+            <th>IMAGEN</th>
+            <th>NOMBRE</th>
+            <th>UNIDAD CAJA </th>
+            <th>PRECIO DISTRIBUIDOR</th>
+            <th>PRECIO MAYOR A 3</th>
+            <th>PRECIO DETALLISTA</th>
+            <th>PVP</th>
+            <th>CATEGORIA</th>
+            <th>ESTADO PRODUCTO</th>
+            <th>ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr  class="text-center" *ngFor="let item of categoria | paginate: { itemsPerPage: 20, currentPage: currentPage }">
+            <td>{{ item.id_categoria }}</td>
+            <td>{{ item.nombre_categoria }}</td>
+          
+           
+            <td>
+              <button  class="btn btn-warning">
+                <span class="fa fa-edit"></span> Editar
+              </button>
+              <button class="btn btn-danger" style="margin-left: 10px;">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
