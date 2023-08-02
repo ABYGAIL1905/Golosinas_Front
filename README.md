@@ -33,3 +33,8 @@ npm install ngx-pagination --save
 npm install ngx-toastr --legacy-peer-deps
 npm install ngx-toastr --save
 
+# Vercion de angular cli y angular
+ng update @angular/cli
+ng update @angular/core@latest
+
+

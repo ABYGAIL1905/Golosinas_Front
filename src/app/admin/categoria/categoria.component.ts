@@ -18,10 +18,11 @@ export class CategoriaComponent implements OnInit {
 
   }
   ngOnInit(): void {
+    this.listaCategoria();
     
   }
 
-  listaProducto() {
+  listaCategoria() {
     this.serviceCategoria.listaCategoria()
        .subscribe(data => {
          this.categoria = data;

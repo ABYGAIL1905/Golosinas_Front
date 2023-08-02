@@ -1,7 +1,7 @@
 <div class="container">
     
     <div class="card-header">
-      <h1>Productos</h1>
+      <h1>CATEGORIAS DE PRODUCTOS</h1>
       <button
         type="button"
         class="btn btn-primary"
@@ -20,15 +20,10 @@
         <thead>
           <tr class="text-center">
             <th>CODIGO</th>
-            <th>IMAGEN</th>
             <th>NOMBRE</th>
-            <th>UNIDAD CAJA </th>
-            <th>PRECIO DISTRIBUIDOR</th>
-            <th>PRECIO MAYOR A 3</th>
-            <th>PRECIO DETALLISTA</th>
-            <th>PVP</th>
-            <th>CATEGORIA</th>
-            <th>ESTADO PRODUCTO</th>
+            <th>DESCRIPCION</th>
+           
+           
             <th>ACCIONES</th>
           </tr>
         </thead>
@@ -36,6 +31,7 @@
           <tr  class="text-center" *ngFor="let item of categoria | paginate: { itemsPerPage: 20, currentPage: currentPage }">
             <td>{{ item.id_categoria }}</td>
             <td>{{ item.nombre_categoria }}</td>
+            <td>{{ item.descripcion_categoria }}</td>
           
            
             <td>

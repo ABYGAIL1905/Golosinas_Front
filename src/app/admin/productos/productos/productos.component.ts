@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+
 import { Productos } from 'src/app/models/productos';
 import { ProductosService } from 'src/app/service/productos.service';
 
@@ -20,27 +23,109 @@ export class ProductosComponent implements OnInit{
   producto: any[] = [];
   produ = new Productos();
   currentPage = 1;
-  toastrService: any;
+  
   classUser: any;
+  public previsualizacion!: string;
+  public archivos: any = []
+  public loading!: boolean;
 
   constructor(
     public productoService:ProductosService, 
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private toastrService: ToastrService,
+    private sanitizer: DomSanitizer
     ) { 
       this.frmProducto = fb.group({
         //codigo_producto: ['', Validators.required],
-        foto_producto: ['', [Validators.required]],
+       foto_producto: ['', [Validators.required]],
         nombre_producto: ['', [Validators.required]]
       })
     }
+
+    
+
+    onImageLoad(event: Event) {
+      console.log('Imagen cargada:', event);
+    }
+   
+    
 
   ngOnInit(): void {
     this.listaProducto();
   }
 
-  //Almacenar en el objeto
+  extraerBase64 = async ($event: any) => {
+    try {
+      const unsafeImg = window.URL.createObjectURL($event);
+      const image = this.sanitizer.bypassSecurityTrustUrl(unsafeImg);
+      const reader = new FileReader();
+      reader.readAsDataURL($event);
+  
+      return new Promise((resolve: any) => {
+        reader.onload = () => {
+          resolve({
+            base: reader.result
+          });
+        };
+        reader.onerror = () => {
+          resolve({
+            base: null
+          });
+        };
+      });
+    } catch (e) {
+      return null;
+    }
+  }
+  
+
+  
+  subirArchivo(): any {
+    const formularioDeDatos = new FormData();
+    try {
+      this.loading = true;
+      
+      this.archivos.forEach((archivo:any) => {
+        formularioDeDatos.append('files', archivo)
+      })
+      // formularioDeDatos.append('_id', 'MY_ID_123')
+      this.productoService.guardarProductos1(this.produ,formularioDeDatos)
+        .subscribe(res => {
+          this.loading = false;
+          console.log('Respuesta del servidor', res);
+
+        }, () => {
+          this.loading = false;
+          alert('Error');
+        })
+    } catch (e) {
+      this.loading = false;
+      console.log('ERROR', e);
+
+    }
+  }
+
+  capturarFile(event: any) {
+    const archivoCapturado = event.target.files[0]
+    this.extraerBase64(archivoCapturado).then((imagen: any) => {
+      this.previsualizacion = imagen.base;
+      console.log(imagen);
+
+    })
+    this.archivos.push(archivoCapturado)
+    // 
+    // console.log(event.target.files);
+
+  }
   async subirFoto(event: any) {
+    const archivoCapturado = event.target.files[0]
+    this.extraerBase64(archivoCapturado).then((imagen: any) => {
+      this.previsualizacion = imagen.base;
+      console.log(imagen);
+
+    })
+    this.archivos.push(archivoCapturado)
     const file = event.target.files[0];
     const fileSize = file.size; // tamaño en bytes
     console.log('Tamaño de la foto en bytes:', fileSize);
@@ -50,8 +135,8 @@ export class ProductosComponent implements OnInit{
       event.target.value = null;
     } else {
       try {
-        this.classUser.foto_producto = await this.convertToBase64(file);
-        console.log('Foto convertida a Base64:', this.classUser.foto_producto);
+        this.produ.foto_producto = await this.convertToBase64(file);
+        console.log('Foto convertida a Base64:', this.produ.foto_producto);
       } catch (error) {
         console.error(error);
         
@@ -59,6 +144,10 @@ export class ProductosComponent implements OnInit{
     }
   }
 
+  
+getBase64Image(base64Data: string): string {
+  return 'data:image/jpeg;base64,' + base64Data;
+}
   //Conversion de la imagen en base 64
   async convertToBase64(file: File): Promise<string> {
     const reader = new FileReader();
@@ -113,7 +202,7 @@ export class ProductosComponent implements OnInit{
 
  
 
- /* eliminar(producto: Productos): void {
+  eliminarProductos(producto: Productos): void {
 
     Swal.fire({
       title: '¿Esta Seguro?',
@@ -129,15 +218,6 @@ export class ProductosComponent implements OnInit{
     this.productoService.deleteProducto(producto)
         .subscribe(data => {
           this.producto = this.producto.filter(p => p !== producto);
-          // Swal.fire({
-          //   title: 'Producto Eliminado éxitosamente',
-          //   icon: 'success',
-          //   iconColor :'#17550c',
-          //   color: "#0c3255",
-          //   confirmButtonColor:"#0c3255",
-          //   background: "#63B68B",
-          // })
-          //alert("Se elimino...!!")
           Swal.fire(
             'Borrado!',
                 'Su archivo ha sido borrado.',
@@ -150,6 +230,67 @@ export class ProductosComponent implements OnInit{
     })
     
 
-  }*/
+  }
 
+  
+  actualizarProductos(productoObj: Productos) {
+
+    Swal.fire({
+      title: '¿Desea modificar los campos?',
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'SI',
+          denyButtonText: `NO`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+    //COLOCAR EL CODIGO A EJECUTAR
+    this.productoService.actualizar(productoObj)
+      .subscribe(data => {
+        this.producto = data;
+        Swal.fire({
+          title: 'Producto Modificada éxitosamente',
+          icon: 'success',
+          iconColor :'#17550c',
+          color: "#0c3255",
+          confirmButtonColor:"#0c3255",
+          background: "#63B68B",
+        })
+        //alert("Se Actualiazo");
+        this.router.navigate(['/productos'])
+      });
+            //FIN DEL CODIGO A EJECUTAR
+        //Swal.fire('Modificado!', '', 'success')
+      } else if (result.isDenied) {
+        Swal.fire('Ningun campo modificado', '', 'info')
+      }
+    })
+
+    
+  }
+
+  editDatos(productoObj: Productos) {
+    // this.crite.id_criterio = criterio.id_criterio
+    // this.crite.nombre = criterio.nombre
+    // this.crite.descripcion = criterio.descripcion
+    this.produ = productoObj;
+    this.frmProducto = new FormGroup({
+      foto_producto: new FormControl(productoObj.foto_producto),
+      nombre_producto: new FormControl(productoObj.nombre_producto)
+      
+      
+
+    });
+  }
+  actualizarP() {
+    this.produ.nombre_producto = this.frmProducto.value.nombre_producto;
+    this.produ.foto_producto = this.frmProducto.value.foto_producto;
+    this.productoService.actualizar(this.produ)
+      .subscribe(response => {
+        this.produ = new Productos();
+        this.listaProducto();
+        Swal.fire('Operacion exitosa!', 'El registro se actualizo con exito', 'success')
+      });
+  }
+  
 }

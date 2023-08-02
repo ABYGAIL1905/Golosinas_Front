@@ -8,13 +8,13 @@ import { Productos } from '../models/productos';
   providedIn: 'root'
 })
 export class CategoriaService {
-  private url1: string = 'http://localhost:5001/api/categoria';
+  private url: string = 'http://localhost:5001/api/categoria/listar';
 
   constructor(private http: HttpClient) { }
 
   public listaCategoria(): Observable<Categoria[]> {
     return this.http
-      .get(this.url1 + '/listar')
+      .get(this.url )
       .pipe(map((response) => response as Categoria[]));
   }
 }

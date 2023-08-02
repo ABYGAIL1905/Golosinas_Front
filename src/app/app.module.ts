@@ -11,6 +11,7 @@ import { CategoriaService } from './service/categoria.service';
 import { CategoriaComponent } from './admin/categoria/categoria.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { ToastrModule } from 'ngx-toastr';
 
 
 
@@ -27,7 +28,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    ToastrModule.forRoot()
   ],
   providers: [CategoriaService],
   bootstrap: [AppComponent]

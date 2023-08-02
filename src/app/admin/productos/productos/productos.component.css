@@ -20,3 +20,12 @@
   .personal-image input[type="file"] {
     display: none;
   }
+  .input-file{
+    background-color: transparent;
+    position: relative;
+    height: 250px;
+    width: 400px;
+    border:solid 0px rgb(226 226 226);
+    margin-top: 1rem;
+    cursor: pointer;
+}
