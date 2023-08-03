@@ -1,0 +1,44 @@
+
+<div class="card-header">
+    <h1>CAtalogo de Productos</h1>
+  
+  </div>
+  <div class="pagination-container">
+    <pagination-controls
+      (pageChange)="currentPage = $event"
+    ></pagination-controls>
+    <div class="tabla-contenedor">
+        <table class="table table-hover">
+          <thead>
+            <tr class="text-center">
+              <th>CODIGO</th>
+              <th>IMAGEN</th>
+              <th>NOMBRE</th>
+              <!-- Añade las demás columnas que desees mostrar -->
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of dataSource">
+              <tr class="text-center">
+              
+                <td>
+                  <img
+                    width="100px"
+                    *ngIf="!item.productoclas.foto_producto"
+                    width="200"
+                    [src]="getBase64Image(item.productoclas.foto_producto)"
+                    class="imagen-producto"
+                    alt=""
+                    (load)="onImageLoad($event)"
+                  />
+                </td>
+                <td>{{ item.productoclas.nombre_producto }}</td>
+                <!-- Añade las demás columnas que desees mostrar -->
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+      
+    
+  </div>

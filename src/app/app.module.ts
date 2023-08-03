@@ -5,13 +5,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ProductosComponent } from './admin/productos/productos/productos.component';
 import { EmpresaComponent } from './admin/empresa/empresa/empresa.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductosService } from './service/productos.service';
 import { CategoriaService } from './service/categoria.service';
 import { CategoriaComponent } from './admin/categoria/categoria.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrModule } from 'ngx-toastr';
+import { CatalogoComponent } from './admin/catalogo/catalogo.component';
+import { CatalogovistaComponent } from './admin/catalo/catalogovista/catalogovista.component';
 
 
 
@@ -21,7 +23,9 @@ import { ToastrModule } from 'ngx-toastr';
     AppComponent,
     ProductosComponent,
     EmpresaComponent,
-    CategoriaComponent
+    CategoriaComponent,
+    CatalogoComponent,
+    CatalogovistaComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +33,8 @@ import { ToastrModule } from 'ngx-toastr';
     ReactiveFormsModule,
     HttpClientModule,
     NgxPaginationModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    FormsModule
   ],
   providers: [CategoriaService],
   bootstrap: [AppComponent]

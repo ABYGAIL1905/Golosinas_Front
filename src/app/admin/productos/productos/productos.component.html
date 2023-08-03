@@ -1,99 +1,108 @@
 <h1>LISTA</h1>
 
 <div class="container">
-    
-      <div class="card-header">
-        <h1>Productos</h1>
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#materiaModal"
-        >
-          CREAR NUEVO
-        </button>
-      </div>
-      <div class="pagination-container">
-  <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+  <div class="card-header">
+    <h1>Productos</h1>
+    <button
+      type="button"
+      class="btn btn-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#materiaModal"
+    >
+      CREAR NUEVO
+    </button>
+  </div>
+  <div class="pagination-container">
+    <pagination-controls
+      (pageChange)="currentPage = $event"
+    ></pagination-controls>
 
+    <div class="tabla-contenedor">
+      <table class="table table-hover custom-table">
+        <!-- Encabezado de la tabla -->
+        <thead>
+          <tr class="text-center">
+            <th class="custom-th">SELECCIONAR</th>
+            <th class="custom-th">CODIGO</th>
+            <th class="custom-th">IMAGEN</th>
+            <th class="custom-th">NOMBRE</th>
+            <!-- Otras columnas -->
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filas de la tabla -->
+          <tr
+            class="text-center"
+            *ngFor="let item of producto | paginate : { itemsPerPage: 20, currentPage: currentPage }">
+          <td>
+            <input type="checkbox" [(ngModel)]="item.seleccionado" />
+          </td>
+            <td class="custom-td">{{ item.codigo_producto }}</td>
+            <td class="custom-td">
+              <div class="imagen-contenedor">
+                <img
+                  class="imagen-producto"
+                  *ngIf="!produ.foto_producto"
+                  [src]="previsualizacion"
+                  [src]="getBase64Image(item.foto_producto)"
+                  alt=""
+                  (load)="onImageLoad($event)"
+                />
+              </div>
+            </td>
+         
+            <td class="custom-td">{{ item.nombre_producto }}</td>
+            <td class="custom-td">{{ item.unidad_caja }}</td>
+            <td class="custom-td">{{ item.precio_distribuidor }}</td>
+            <td class="custom-td">{{ item.precio_mayor3 }}</td>
+            <td class="custom-td">{{ item.precio_detallista }}</td>
+            <td class="custom-td">{{ item.precio_venta_publico }}</td>
+            <td class="custom-td">{{ item.categoria?.nombre_categoria }}</td>
+            <td class="custom-td">{{ item.estado_producto }}</td>
 
-      <div class="tabla-contenedor">
-        <table class="table table-hover">
-          <thead>
-            <tr class="text-center">
-              <th>CODIGO</th>
-              <th>IMAGEN</th>
-              <th>NOMBRE</th>
-              <th>UNIDAD CAJA </th>
-              <th>PRECIO DISTRIBUIDOR</th>
-              <th>PRECIO MAYOR A 3</th>
-              <th>PRECIO DETALLISTA</th>
-              <th>PVP</th>
-              <th>CATEGORIA</th>
-              <th>ESTADO PRODUCTO</th>
-              <th>ACCIONES</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr  class="text-center" *ngFor="let item of producto | paginate: { itemsPerPage: 20, currentPage: currentPage }">
-              <td>{{ item.codigo_producto }}</td>
-              <td>
-                <img width="100px"  *ngIf="!produ.foto_producto"
-                width="200"
-                [src]="previsualizacion" [src]="getBase64Image(item.foto_producto)" class="imagen-producto" alt="" (load)="onImageLoad($event)" />
-              </td>
-        
-       
-                
-              
-              <td>{{ item.nombre_producto }}</td>
-              <td>{{ item.unidad_caja }}</td>
-              <td>{{ item.precio_distribuidor }}</td>
-              <td> {{item.precio_mayor3}}</td>
-              <td> {{item.precio_detallista}}</td>
-              <td> {{item.precio_venta_publico}}</td>
-              <td>{{ item.categoria?.nombre_categoria }}</td>
-              <td> {{item.  estado_producto}}</td>
-             
-             
-              <td>
-                <div class="btn-group" role="group">
-                  <button
-                    type="button"
-                    class="btn btn-warning"
-                   
-                    (click)="editDatos(item)"
-                  >
-                  <span class="fa fa-edit"></span> Editar
-                  </button>
-                  <button
-                  class="btn btn-danger" style="margin-left: 10px;"
-                    role="button"
-                    (click)="eliminarProductos(item)"
-                  >
-                  <span class="fa fa-edit"></span> Eliminar
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+            <td>
+              <div class="btn-group" role="group">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  style="margin-right: 5%"
+                  data-bs-toggle="modal"
+                  data-bs-target="#materiaModal"
+                  (click)="editDatos(item)"
+                >
+                  EDITAR
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button
+                  class="btn btn-danger"
+                  style="margin-left: 10px"
+                  role="button"
+                  (click)="eliminarProductos(item)"
+                >
+                  <span class="fa fa-edit"></span> ELIMINAR
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <!-- Agrega el botón para enviar los productos seleccionados -->
+<button (click)="enviarSeleccionados()">Enviar Seleccionados</button>
+
+        </tfoot>
+      </table>
     </div>
     
+  </div>
 
-    <div
+  <div
+    class="modal fade"
+    id="materiaModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
     
-      class="modal fade"
-      id="materiaModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    
-    >
-      
-  
-
+   >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header bg-blue">
@@ -107,78 +116,105 @@
             aria-label="Close"
           ></button>
         </div>
-    <!-- ... Your existing HTML code ... -->
 
-<!-- Input for image upload -->
-<div class="modal-body">
-  <form [formGroup]="frmProducto" (ngSubmit)="nuevo()" id="formulario">
-    <div>
-      <label for="nombre">Nombre:</label>
-      <input
-        class="form-control"
-        formControlName="nombre_producto"
-        type="text"
-        id="nombre_producto"
-        name="nombre_producto"
-        style="margin-bottom: 10px"
-      />
-      <div class="alert alert-danger" *ngIf="frmProducto.controls['nombre_producto'].invalid && frmProducto.controls['nombre_producto'].touched">
-        <div *ngIf="frmProducto.controls['nombre_producto'].hasError('required')">Debe ingresar un nombre</div>
-      </div>
-    </div>
-    <div>
-      <label class="label" style="border: black"> joooko
-        <input
-          class="form-control"
-          formControlName="foto_producto"
-          type="file"
-          accept="image/jpeg, image/jpg, image/png"
-          (change)="subirFoto($event)"
-        />
-        <div class="alert alert-danger" *ngIf="frmProducto.controls['foto_producto'].invalid && frmProducto.controls['foto_producto'].touched">
-          
-          <div *ngIf="frmProducto.controls['foto_producto'].hasError('required')">Debe ingresar un nombre</div>
-        
+        <div class="modal-body">
+          <form [formGroup]="frmProducto" (ngSubmit)="nuevo1()" id="formulario">
+            <div>
+              <label for="nombre">Nombre:</label>
+              <input
+                class="form-control"
+                formControlName="nombre_producto"
+                type="text"
+                id="nombre_producto"
+                name="nombre_producto"
+                style="margin-bottom: 10px"
+              />
+              <div
+                class="alert alert-danger"
+                *ngIf="
+                  frmProducto.controls['nombre_producto'].invalid &&
+                  frmProducto.controls['nombre_producto'].touched
+                "
+              >
+                <div
+                  *ngIf="
+                    frmProducto.controls['nombre_producto'].hasError('required')
+                  "
+                >
+                  Debe ingresar un nombre
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <input
+                class="form-control custom-file-input"
+                formControlName="foto_producto"
+                type="file"
+                accept="image/jpeg, image/jpg, image/png"
+                (change)="subirFoto($event)"
+              />
+              <div
+                class="alert alert-danger"
+                *ngIf="
+                  frmProducto.controls['foto_producto'].invalid &&
+                  frmProducto.controls['foto_producto'].touched
+                "
+              >
+                <div
+                  *ngIf="
+                    frmProducto.controls['foto_producto'].hasError('required')
+                  "
+                >
+                  Debe ingresar un nombre
+                </div>
+              </div>
+
+              <figure class="personal-figure">
+                <img
+                  *ngIf="produ.foto_producto"
+                  [src]="'data:image/jpeg;base64,' + produ.foto_producto"
+                  class="personal-avatar"
+                  alt=""
+                />
+              </figure>
+            </div>
+
+            <!-- Rest of your form ... -->
+          </form>
         </div>
-        <figure class="personal-figure">
-          <img
-            *ngIf="produ.foto_producto"
-            [src]="'data:image/jpeg;base64,' + produ.foto_producto"
-            class="personal-avatar"
-            alt=""
-          />
-         
-          <figcaption class="personal-figcaption">
-            <img width="200" [src]="previsualizacion" />
-          </figcaption>
-        </figure>
-      </label>
-    </div>
 
-    <!-- Rest of your form ... -->
-  </form>
-</div>
-
-<!-- Agregar and Actualizar buttons -->
-<div class="modal-footer">
-  <button type="button" form="formulario" class="btn btn-warning" data-bs-dismiss="modal">
-    Cancelar
-  </button>
-  <button type="submit" class="btn btn-primary" form="formulario" *ngIf="!produ.id_producto" data-dismiss="modal">
-    Agregar
-  </button>
-  <button class="btn btn-primary" *ngIf="produ.id_producto" data-dismiss="modal"
-  data-bs-dismiss="modal"
-  (click)="actualizarP()"
-  [disabled]="!frmProducto.valid">
-    Actualizar
-  </button>
-</div>
-
-
-
+        <!-- Agregar and Actualizar buttons -->
+        <div class="modal-footer">
+          <button
+            type="button"
+            form="formulario"
+            class="btn btn-warning"
+            data-bs-dismiss="modal"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            form="formulario"
+            *ngIf="!produ.id_producto"
+            data-dismiss="modal"
+          >
+            Agregar
+          </button>
+          <button
+            class="btn btn-primary"
+            *ngIf="produ.id_producto"
+            data-dismiss="modal"
+            data-bs-dismiss="modal"
+            (click)="actualizarP()"
+            [disabled]="!frmProducto.valid"
+          >
+            Actualizar
+          </button>
+        </div>
       </div>
-
-
-
     </div>
+  </div>
+</div>
