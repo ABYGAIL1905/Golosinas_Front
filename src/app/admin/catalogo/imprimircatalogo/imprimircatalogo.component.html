@@ -1,0 +1,63 @@
+<div class="container" > 
+    <form action="">
+    <div class="card-header">
+        <h1>CAtalogo de Productos</h1>
+      
+      </div>
+      <div class="pagination-container">
+        <pagination-controls
+          (pageChange)="currentPage = $event"
+        ></pagination-controls>
+        <div class="tabla-contenedor">
+            <table class="table table-hover">
+              <thead>
+                <tr class="text-center">
+                
+                  <th>IMAGEN</th>
+                  <th>NOMBRE</th>
+                  <!-- Añade las demás columnas que desees mostrar -->
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let item of productosSeleccionados ">
+                  <tr class="text-center">
+                  
+                    <div class="imagen-contenedor">
+                      <img
+                        class="imagen-producto"
+                        *ngIf="!produ.foto_producto"
+                        [src]="previsualizacion"
+                        [src]="getBase64Image(item.foto_producto)"
+                        alt=""
+                        (load)="onImageLoad($event)"
+                      />
+                    </div>
+                    <td>{{ item.nombre_producto }}</td>
+                    <td>
+                      <button class="btn btn-danger" (click)="eliminarProducto(item)">Eliminar</button>
+                    </td>
+                   
+                  </tr>
+                </ng-container>
+              </tbody>
+              <tfoot>
+                <!-- Agrega el botón para enviar los productos seleccionados -->
+      <button (click)="enviarSeleccionados()">Enviar Seleccionados</button>
+      
+              </tfoot>
+            </table>
+            <button
+              type="button"
+              class="btn btn-primary"
+             
+            >
+              Añadir más productos
+            </button>
+            <button type="submit" class="btn btn-primary" (click)="guardarDatosEnAPI1()"  >Guardar</button>
+          </div>
+          
+        
+      </div>
+     
+    </form>
+    </div>

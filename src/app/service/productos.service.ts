@@ -33,4 +33,33 @@ export class ProductosService{
 public actualizar(productoObj: Productos): Observable<any> {
   return this.http.put<Productos>(this.url+"/actualizar/"+productoObj.id_producto,productoObj);
 }
+private productosSeleccionados: Productos[] = [];
+
+getProductosSeleccionados(): Productos[] {
+  return this.productosSeleccionados;
+}
+
+setProductosSeleccionados(productos: Productos[]): void {
+  this.productosSeleccionados = productos;
+}
+
+
+
+  agregarProductoSeleccionado(producto: Productos) {
+    this.productosSeleccionados.push(producto);
+  }
+
+  private receivedProducts: Productos[] = [];
+
+  setReceivedProducts(products: Productos[]) {
+    this.receivedProducts = products;
+  }
+
+  getReceivedProducts() {
+    return this.receivedProducts;
+  }
+
+ 
+
+
 }

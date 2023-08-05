@@ -1,22 +1,20 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Catalogo } from 'src/app/models/catalogo';
 import { Productos } from 'src/app/models/productos';
+import { CatalogoService } from 'src/app/service/catalogo.service';
 import { ProductosService } from 'src/app/service/productos.service';
 import Swal from 'sweetalert2';
-import { ActivatedRoute } from '@angular/router';
-import { Catalogo } from 'src/app/models/catalogo';
-import { CatalogoService } from 'src/app/service/catalogo.service';
-
 
 @Component({
-  selector: 'app-catalogo',
-  templateUrl: './catalogo.component.html',
-  styleUrls: ['./catalogo.component.css']
+  selector: 'app-imprimircatalogo',
+  templateUrl: './imprimircatalogo.component.html',
+  styleUrls: ['./imprimircatalogo.component.css']
 })
-export class CatalogoComponent {
+export class ImprimircatalogoComponent {
 
   guardadoExitoso: boolean = false;
   
@@ -32,7 +30,6 @@ export class CatalogoComponent {
   productosSeleccionados: Productos[]=[];
   productosGuardar: any[] = [];
   productosSeleccionadosTemp: any[] = [];
-  productosRecibe: any;
 
 
  
@@ -68,9 +65,8 @@ export class CatalogoComponent {
     
   }
   productosRecibidos(){
-    this.productosRecibe = this.productoService.getProductosSeleccionados();
-    this.serviceProducto.setReceivedProducts(this.productosRecibe);
-    console.log(this.productosRecibidos+"recibidossssssss")
+    this.productosSeleccionados = this.productoService.getProductosSeleccionados();
+    console.log(this.productosRecibidos+"recibidos Imprimir")
   }
 
   extraerBase64 = async ($event: any) => {
@@ -256,22 +252,12 @@ getBase64Image(base64Data: string): string {
       this.productosSeleccionados.splice(index, 1);
     }
   }
-  enviarRecibidos() {
-   
-    this.productosRecibidos();
-    
-  this.serviceProducto.setReceivedProducts(this.productosRecibe);
-  console.log(this.productosSeleccionados + "enviando");
-  
-  this.router.navigate(['/imprimir-cata']); 
+  enviarSeleccionados() {
+    this.productosSeleccionados = this.producto.filter((item) => item.seleccionado);
+    // Guardar los productos seleccionados en el servicio
+    this.productoService.setProductosSeleccionados(this.productosSeleccionados);
+    // Navegar al componente OtroComponente
+    this.router.navigate(['/catalogo-vista catalogo-vista']);
   }
-  
 
-
-
-  
-  
-
- 
- 
 }

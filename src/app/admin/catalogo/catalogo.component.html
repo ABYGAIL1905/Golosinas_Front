@@ -1,4 +1,5 @@
-
+<div class="container" > 
+<form action="">
 <div class="card-header">
     <h1>CAtalogo de Productos</h1>
   
@@ -11,34 +12,50 @@
         <table class="table table-hover">
           <thead>
             <tr class="text-center">
-              <th>CODIGO</th>
+            
               <th>IMAGEN</th>
               <th>NOMBRE</th>
               <!-- Añade las demás columnas que desees mostrar -->
             </tr>
           </thead>
           <tbody>
-            <ng-container *ngFor="let item of dataSource">
+            <ng-container *ngFor="let item of productosRecibe ">
               <tr class="text-center">
               
-                <td>
+                <div class="imagen-contenedor">
                   <img
-                    width="100px"
-                    *ngIf="!item.productoclas.foto_producto"
-                    width="200"
-                    [src]="getBase64Image(item.productoclas.foto_producto)"
                     class="imagen-producto"
+                    *ngIf="!produ.foto_producto"
+                    [src]="previsualizacion"
+                    [src]="getBase64Image(item.foto_producto)"
                     alt=""
                     (load)="onImageLoad($event)"
                   />
+                </div>
+                <td>{{ item.nombre_producto }}</td>
+                <td>
+                  <button class="btn btn-danger" (click)="eliminarProducto(item)">Eliminar</button>
                 </td>
-                <td>{{ item.productoclas.nombre_producto }}</td>
-                <!-- Añade las demás columnas que desees mostrar -->
+               
               </tr>
             </ng-container>
           </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="Número de columnas en tu tabla">
+                <div class="center-container">
+                  <button class="generate-button" (click)="enviarRecibidos()">
+                    <i class="fas fa-file-pdf"></i> Generar catálogo
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </div>
       
     
   </div>
+ 
+</form>
+</div>

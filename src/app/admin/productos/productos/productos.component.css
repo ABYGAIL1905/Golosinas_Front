@@ -39,15 +39,7 @@
 }
 
 
-/* Estilo para las celdas de la tabla */
-.custom-td {
-  height: 100px; /* Ajusta el alto deseado para las celdas */
-}
 
-/* Estilo para las cabeceras de la tabla */
-.custom-th {
-  height: 30px; /* Ajusta el alto deseado para las cabeceras */
-}
 
 /* Estilo para el contenedor de la imagen */
 .imagen-contenedor {
@@ -64,6 +56,76 @@
   width: 100%; /* La imagen ocupará todo el ancho del contenedor */
   height: 100%; /* La imagen ocupará todo el alto del contenedor */
   object-fit: cover; /* Ajusta la imagen para cubrir todo el contenedor */
+}
+
+/* EStilo par centrar en boton*/
+
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* O ajusta esto según tus necesidades */
+}
+
+.generate-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #0c3255;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.generate-button i {
+  margin-right: 10px;
+}
+
+
+/* estilo para la tabla
+
+/* Estilos para las filas de la tabla */
+.custom-row {
+  background-color: #f7f7f7; /* Color de fondo de las filas */
+  border-bottom: 1px solid #ddd; /* Borde inferior de las filas */
+  transition: background-color 0.3s; /* Transición de color de fondo */
+}
+
+/* Estilos para resaltar filas al pasar el mouse */
+.custom-row:hover {
+  background-color: #e0e0e0; /* Cambia el color de fondo al pasar el mouse */
+}
+
+/* Estilos para las celdas de la fila */
+.custom-row td {
+  padding: 10px; /* Espaciado interno de las celdas */
+  border: none; /* Borde de las celdas */
+}
+
+/* Estilos para el contenido de las celdas */
+.custom-row td:nth-child(2) { /* Por ejemplo, la segunda celda */
+  font-weight: bold; /* Texto en negrita */
+  color: #333; /* Color de texto */
+}
+
+.selected {
+  background-color: blue; /* Cambia esto según el estilo que desees */
+  color: white; /* Cambia esto según el estilo que desees */
+}
+
+.form-check-input:checked ~ .form-check-label {
+  background-color: initial;
+  color: initial;
+}
+
+.form-check-input:not(:checked) ~ .form-check-label {
+  opacity: 0.5; /* Cambia esto según el estilo que desees */
+}
+.scrollable-container {
+  max-height: 200px; /* Ajusta la altura máxima según tus preferencias */
+  overflow-y: auto;
 }
 
 

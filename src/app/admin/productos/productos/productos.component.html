@@ -1,8 +1,6 @@
-<h1>LISTA</h1>
-
 <div class="container">
   <div class="card-header">
-    <h1>Productos</h1>
+    <h2 style="text-align: center">Productos</h2>
     <button
       type="button"
       class="btn btn-primary"
@@ -26,17 +24,28 @@
             <th class="custom-th">CODIGO</th>
             <th class="custom-th">IMAGEN</th>
             <th class="custom-th">NOMBRE</th>
+            <th class="custom-th">UNIDAD CAJA</th>
+            <th class="custom-th">PRECIO DISTRIBIDOR</th>
+            <th class="custom-th">PRECIO MAYOR 3</th>
+            <th class="custom-th">PRECIO DETALLE</th>
+            <th class="custom-th">PVP</th>
+            <th class="custom-th">CATEGORIA</th>
+            <th class="custom-th">ESTADO</th>
             <!-- Otras columnas -->
           </tr>
         </thead>
         <tbody>
           <!-- Filas de la tabla -->
           <tr
-            class="text-center"
-            *ngFor="let item of producto | paginate : { itemsPerPage: 20, currentPage: currentPage }">
-          <td>
-            <input type="checkbox" [(ngModel)]="item.seleccionado" />
-          </td>
+            class="custom-row"
+            *ngFor="
+              let item of producto
+                | paginate : { itemsPerPage: 5, currentPage: currentPage }
+            "
+          >
+            <td>
+              <input type="checkbox" [(ngModel)]="item.seleccionado" />
+            </td>
             <td class="custom-td">{{ item.codigo_producto }}</td>
             <td class="custom-td">
               <div class="imagen-contenedor">
@@ -50,7 +59,7 @@
                 />
               </div>
             </td>
-         
+
             <td class="custom-td">{{ item.nombre_producto }}</td>
             <td class="custom-td">{{ item.unidad_caja }}</td>
             <td class="custom-td">{{ item.precio_distribuidor }}</td>
@@ -86,13 +95,18 @@
           </tr>
         </tbody>
         <tfoot>
-          <!-- Agrega el botón para enviar los productos seleccionados -->
-<button (click)="enviarSeleccionados()">Enviar Seleccionados</button>
-
+          <tr>
+            <td colspan="Número de columnas en tu tabla">
+              <div class="center-container">
+                <button class="generate-button" (click)="enviarSeleccionados()">
+                  <i class="fas fa-file-pdf"></i> Selecionar
+                </button>
+              </div>
+            </td>
+          </tr>
         </tfoot>
       </table>
     </div>
-    
   </div>
 
   <div
@@ -101,13 +115,12 @@
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
-    
-   >
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header bg-blue">
           <h3 class="modal-title">
-            <i class="fa fa-info-circle"></i> Criterios
+            <i class="fa fa-info-circle"></i> NUEVO PRODUCTO
           </h3>
           <button
             type="button"
@@ -133,14 +146,10 @@
                 class="alert alert-danger"
                 *ngIf="
                   frmProducto.controls['nombre_producto'].invalid &&
-                  frmProducto.controls['nombre_producto'].touched
-                "
-              >
+                  frmProducto.controls['nombre_producto'].touched ">
                 <div
                   *ngIf="
-                    frmProducto.controls['nombre_producto'].hasError('required')
-                  "
-                >
+                    frmProducto.controls['nombre_producto'].hasError('required')" >
                   Debe ingresar un nombre
                 </div>
               </div>
@@ -179,8 +188,176 @@
                 />
               </figure>
             </div>
+            <!-- UNIDAD POR CAJA -->
+            <div>
+              <label for="u/caja">Unidad por caja:</label>
+              <input
+                class="form-control"
+                formControlName="unidad_caja"
+                type="number"
+                id="unidad_caja"
+                name="unidad_caja"
+                style="margin-bottom: 10px"
+              />
+              <div
+                class="alert alert-danger"
+                *ngIf="
+                  frmProducto.controls['unidad_caja'].invalid &&
+                  frmProducto.controls['unidad_caja'].touched ">
+                <div
+                  *ngIf="
+                    frmProducto.controls['unidad_caja'].hasError('required')" >
+                  Debe ingresar un numero
+                </div>
+              </div>
+            </div>
 
-            <!-- Rest of your form ... -->
+          <!-- PRECIO DISTRIBIDOR -->
+          <div>
+            <label for="precio_distribuidor">Precio Distribuidor:</label>
+            <input
+              class="form-control"
+              formControlName="precio_distribuidor"
+              type="number"
+              id="precio_distribuidor"
+              name="precio_distribuidor"
+              style="margin-bottom: 10px"
+            />
+            <div
+              class="alert alert-danger"
+              *ngIf="
+                frmProducto.controls['precio_distribuidor'].invalid &&
+                frmProducto.controls['precio_distribuidor'].touched ">
+              <div
+                *ngIf="
+                  frmProducto.controls['precio_distribuidor'].hasError('required')" >
+                Debe ingresar un numero
+              </div>
+            </div>
+          </div>
+         
+          <div>
+            <label for="precio_mayor3">Precio Mayor a 3:</label>
+            <input
+              class="form-control"
+              formControlName="precio_mayor3"
+              type="number"
+              id="precio_mayor3"
+              name="precio_mayor3"
+              style="margin-bottom: 10px"
+            />
+            <div
+              class="alert alert-danger"
+              *ngIf="
+                frmProducto.controls['precio_mayor3'].invalid &&
+                frmProducto.controls['precio_mayor3'].touched ">
+              <div
+                *ngIf="
+                  frmProducto.controls['precio_mayor3'].hasError('required')" >
+                Debe ingresar un numero
+              </div>
+            </div>
+          </div>
+
+          PRECIO DETALLE 
+          <div>
+            <label for="precio_detallista">Precio Ddetallista:</label>
+            <input
+              class="form-control"
+              formControlName="precio_detallista"
+              type="number"
+              id="precio_detallista"
+              name="precio_detallista"
+              style="margin-bottom: 10px"
+            />
+            <div
+              class="alert alert-danger"
+              *ngIf="
+                frmProducto.controls['precio_detallista'].invalid &&
+                frmProducto.controls['precio_detallista'].touched ">
+              <div
+                *ngIf="
+                  frmProducto.controls['precio_detallista'].hasError('required')" >
+                Debe ingresar un numero
+              </div>
+            </div>
+          </div>
+           PRECIO VENTA AL PUBLICO 
+          <div>
+            <label for="pvp">P V P:</label>
+            <input
+              class="form-control"
+              formControlName="pvp"
+              type="number"
+              id="pvp"
+              name="precio_venta_publico"
+              style="margin-bottom: 10px"
+            />
+            <div
+              class="alert alert-danger"
+              *ngIf="
+                frmProducto.controls['pvp'].invalid &&
+                frmProducto.controls['pvp'].touched ">
+              <div
+                *ngIf="
+                  frmProducto.controls['pvp'].hasError('required')" >
+                Debe ingresar un numero
+              </div>
+            </div>
+          </div>
+
+         CATEGORIA 
+         <div class="scrollable-container">
+          <div *ngFor="let categoria of categorias">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                [id]="categoria.id_categoria"
+                [value]="categoria"
+                [formControlName]="categoria.nombre_categoria"
+                [checked]="selectedCategory === categoria"
+                (click)="selectedCategory = categoria"
+              >
+              <label
+                class="form-check-label"
+                [for]="categoria.id_categoria"
+                [class.selected]="selectedCategory === categoria"
+              >{{ categoria.nombre_categoria }}</label>
+            </div>
+          </div>
+        </div>
+        
+        
+        
+        
+
+
+
+          
+          <!-- ESTADO -->
+          <div>
+            <label for="pvp">Estado:</label>
+            <input
+              class="form-control"
+              formControlName="estado_producto"
+              type="texto"
+              id="estado_producto"
+              name="estado_producto"
+              style="margin-bottom: 10px"
+            />
+            <div
+              class="alert alert-danger"
+              *ngIf="
+                frmProducto.controls['estado_producto'].invalid &&
+                frmProducto.controls['estado_producto'].touched ">
+              <div
+                *ngIf="
+                  frmProducto.controls['estado_producto'].hasError('required')" >
+                Debe ingresar un numero
+              </div>
+            </div>
+          </div>
           </form>
         </div>
 

@@ -37,4 +37,7 @@ npm install ngx-toastr --save
 ng update @angular/cli
 ng update @angular/core@latest
 
+# Para imprimir 
+npm i jspdf --save
+
 

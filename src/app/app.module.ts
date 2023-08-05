@@ -13,7 +13,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrModule } from 'ngx-toastr';
 import { CatalogoComponent } from './admin/catalogo/catalogo.component';
-import { CatalogovistaComponent } from './admin/catalo/catalogovista/catalogovista.component';
+import { ImprimircatalogoComponent } from './admin/catalogo/imprimircatalogo/imprimircatalogo.component';
+import { ImprimircataComponent } from './admin/imprimircata/imprimircata.component';
+import * as jsPDF from 'jspdf';
+
+
 
 
 
@@ -25,7 +29,10 @@ import { CatalogovistaComponent } from './admin/catalo/catalogovista/catalogovis
     EmpresaComponent,
     CategoriaComponent,
     CatalogoComponent,
-    CatalogovistaComponent
+    ImprimircatalogoComponent,
+    ImprimircataComponent
+ 
+  
   ],
   imports: [
     BrowserModule,
@@ -35,6 +42,7 @@ import { CatalogovistaComponent } from './admin/catalo/catalogovista/catalogovis
     NgxPaginationModule,
     ToastrModule.forRoot(),
     FormsModule
+    
   ],
   providers: [CategoriaService],
   bootstrap: [AppComponent]

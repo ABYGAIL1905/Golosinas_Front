@@ -1,0 +1,20 @@
+<h1>Imprimir</h1>
+
+
+    <div class="container">
+        <div id="cataimpr" class="u-container-style u-list-item u-repeater-item u-shape-rectangle u-white u-list-item-1">
+          <div *ngFor="let item of productosSeleccionados" class="u-container-layout u-similar-container u-valign-top u-container-layout-1">
+            <img class="imagen-producto"
+                 *ngIf="!produ.foto_producto"
+                 [src]="previsualizacion"
+                 [src]="getBase64Image(item.foto_producto)"
+                 alt=""
+                 (load)="onImageLoad($event)">
+            <h4 class="u-text u-text-palette-1-base u-text-2">{{ item.nombre_producto }}</h4>
+            <p class="u-text u-text-3"> Harina de trigo orgánica sin blanquear, harina integral de centeno, agua, sal marina, levadura</p>
+          </div>
+        </div>
+      </div>
+      
+      <button (click)="imprimirCatalogo()">Imprimir</button>
+      

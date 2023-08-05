@@ -1,19 +1,4 @@
-@font-face {
-    font-family: myFirstFont;
-  }
-  
-  #calc{
-    font-family:myFirstFont;
-    font-size: 250%;
-    text-align: right;
-    background-color: inherit;
-    border: none;
-    padding-left:20px;
-    padding-right:20px;
-    padding-bottom: 10px;
-  }
-
-  .input-file{
+.input-file{
     background-color: transparent;
     position: relative;
     height: 250px;
@@ -61,32 +46,7 @@
 
 /* Estilo para la imagen dentro del contenedor */
 .imagen-producto {
-  width: 100%; /* La imagen ocupará todo el ancho del contenedor */
-  height: 100%; /* La imagen ocupará todo el alto del contenedor */
+  width: 90%; /* La imagen ocupará todo el ancho del contenedor */
+  height: 90%; /* La imagen ocupará todo el alto del contenedor */
   object-fit: cover; /* Ajusta la imagen para cubrir todo el contenedor */
-}
-
-/* EStilo par centrar en boton*/
-
-.center-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%; /* O ajusta esto según tus necesidades */
-}
-
-.generate-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #0c3255;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.generate-button i {
-  margin-right: 10px;
 }

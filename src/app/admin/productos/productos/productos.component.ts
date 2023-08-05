@@ -13,6 +13,8 @@ import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { Catalogo } from 'src/app/models/catalogo';
 import { CatalogoService } from 'src/app/service/catalogo.service';
+import { Categoria } from 'src/app/models/categoria';
+import { CategoriaService } from 'src/app/service/categoria.service';
 
 @Component({
   selector: 'app-productos',
@@ -34,6 +36,11 @@ export class ProductosComponent implements OnInit{
   public loading!: boolean;
   public seleccionado !: boolean;
   productosSeleccionados: Productos[] = [];
+  public categorias:Categoria[]=[];
+  
+  selectedCategory: Categoria | null = null;
+
+
   constructor(
     public productoService:ProductosService, 
     private router: Router,
@@ -41,13 +48,29 @@ export class ProductosComponent implements OnInit{
     private toastrService: ToastrService,
     private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
-    private serviceCatalogo:CatalogoService
+    private serviceCatalogo:CatalogoService,
+    private categoriaService:CategoriaService
     ) { 
       this.frmProducto = fb.group({
         //codigo_producto: ['', Validators.required],
        foto_producto: ['', [Validators.required]],
-        nombre_producto: ['', [Validators.required]]
+        nombre_producto: ['', [Validators.required]],
+        unidad_caja: ['', [Validators.required]],
+        precio_distribuidor: ['', [Validators.required]],
+        precio_mayor3: ['', [Validators.required]],
+        precio_detallista: ['', [Validators.required]],
+        pvp: ['', [Validators.required]],
+        estado_producto: ['', [Validators.required]],
+        categoria: ['', [Validators.required]]
+        
+    
       })
+      // Crear controles de categoría y agregarlos al formulario
+this.categorias.forEach(categoria => {
+  const controlName = categoria.id_categoria.toString(); // Convertir el ID a una cadena
+  this.frmProducto.addControl(controlName, this.fb.control(false));
+});
+
     }
 
     
@@ -60,6 +83,7 @@ export class ProductosComponent implements OnInit{
 
   ngOnInit(): void {
     this.listaProducto();
+    this.listaCategoria();
   }
 
   extraerBase64 = async ($event: any) => {
@@ -88,31 +112,7 @@ export class ProductosComponent implements OnInit{
   
 
   
-  subirArchivo(): any {
-    const formularioDeDatos = new FormData();
-    try {
-      this.loading = true;
-      
-      this.archivos.forEach((archivo:any) => {
-        formularioDeDatos.append('files', archivo)
-      })
-      // formularioDeDatos.append('_id', 'MY_ID_123')
-      this.productoService.guardarProductos1(this.produ,formularioDeDatos)
-        .subscribe(res => {
-          this.loading = false;
-          console.log('Respuesta del servidor', res);
-
-        }, () => {
-          this.loading = false;
-          alert('Error');
-        })
-    } catch (e) {
-      this.loading = false;
-      console.log('ERROR', e);
-
-    }
-  }
-
+ 
   capturarFile(event: any) {
     const archivoCapturado = event.target.files[0]
     this.extraerBase64(archivoCapturado).then((imagen: any) => {
@@ -125,36 +125,40 @@ export class ProductosComponent implements OnInit{
     // console.log(event.target.files);
 
   }
+  
+  //para subir foto
   async subirFoto(event: any) {
-    const archivoCapturado = event.target.files[0]
+    this.archivos = []; // Reiniciar el arreglo de archivos antes de agregar el nuevo archivo
+  
+    const archivoCapturado = event.target.files[0];
     this.extraerBase64(archivoCapturado).then((imagen: any) => {
       this.previsualizacion = imagen.base;
       console.log(imagen);
-
-    })
-    this.archivos.push(archivoCapturado)
+    });
+    this.archivos.push(archivoCapturado);
+  
     const file = event.target.files[0];
     const fileSize = file.size; // tamaño en bytes
     console.log('Tamaño de la foto en bytes:', fileSize);
-    if (fileSize > 962144) {
+    if (fileSize > 83554432) {
       this.toastrService.error('La foto es muy pesada.', 'FOTO PESADA.');
-      // alert('La foto es muy pesada');
       event.target.value = null;
     } else {
       try {
-        this.produ.foto_producto = await this.convertToBase64(file);
-        console.log('Foto convertida a Base64:', this.produ.foto_producto);
+        const fotoBase64 = await this.convertToBase64(file);
+        console.log('Foto convertida a Base64:', fotoBase64);
+        this.produ.foto_producto = fotoBase64;
       } catch (error) {
         console.error(error);
-        
       }
     }
   }
-
   
+  //para convertir de base 64 en la foto 
 getBase64Image(base64Data: string): string {
   return 'data:image/jpeg;base64,' + base64Data;
 }
+
   //Conversion de la imagen en base 64
   async convertToBase64(file: File): Promise<string> {
     const reader = new FileReader();
@@ -172,58 +176,55 @@ getBase64Image(base64Data: string): string {
 
   
 
-  nuevo() {
-  this.produ = this.frmProducto.value;
-    this.productoService.guardarProductos(this.produ)
-      .subscribe(
-        (response) => {
-          console.log('Producto creado con éxito:', response);
-          this.guardadoExitoso = true;
-          this.listaProducto();
-          Swal.fire(
-            'Exitoso',
-            'Se ha completado el registro con exito',
-            'success'
-          )
-        },
-        (error) => {
-          console.error('Error al crear el producto:', error);
-          Swal.fire(
-            'Error',
-            'Ha ocurrido un error',
-            'warning'
-          )
-        }
-      );
-  }
-
+  
   async nuevo1() {
-    // Asignar la imagen en formato Base64 al campo 'foto_producto'
     try {
-      this.produ.foto_producto = await this.convertToBase64(this.archivos[0]); // Supongo que solo se guarda una imagen
+      if (this.archivos.length > 0) {
+        this.produ.foto_producto = await this.convertToBase64(this.archivos[0]);
+      }
     } catch (error) {
       console.error('Error al convertir la imagen a Base64:', error);
-      // Puedes mostrar un mensaje de error o manejar la situación según lo necesites
       return;
     }
-    this.produ.nombre_producto = this.frmProducto.value.nombre_producto;
   
-    // Resto del código para guardar el producto
-    this.productoService.guardarProductos(this.produ)
-      .subscribe(
-        (response) => {
-          console.log('Producto creado con éxito:', response);
-          this.guardadoExitoso = true;
-          this.listaProducto();
-          Swal.fire('Exitoso', 'Se ha completado el registro con éxito', 'success');
-        },
-        (error) => {
-          console.error('Error al crear el producto:', error);
-          Swal.fire('Error', 'Ha ocurrido un error', 'warning');
-        }
-      );
+    try {
+      this.produ.nombre_producto = this.frmProducto.value.nombre_producto;
+      this.produ.unidad_caja = this.frmProducto.value.unidad_caja;
+      this.produ.precio_distribuidor = this.frmProducto.value.precio_distribuidor;
+      this.produ.precio_mayor3 = this.frmProducto.value.precio_mayor3;
+      this.produ.precio_detallista = this.frmProducto.value.precio_detallista;
+      this.produ.precio_venta_publico = this.frmProducto.value.pvp;
+  
+      const formData = this.frmProducto.value;
+      if (this.selectedCategory) {
+        this.produ.categoria = this.selectedCategory; // Asignar la categoría al producto
+      }
+  
+      this.produ.estado_producto = this.frmProducto.value.estado_producto;
+  
+      this.productoService.guardarProductos(this.produ)
+        .subscribe(
+          (response) => {
+            console.log('Producto creado con éxito:', response);
+            this.guardadoExitoso = true;
+            this.listaProducto();
+            Swal.fire('Exitoso', 'Se ha completado el registro con éxito', 'success');
+          },
+          (error) => {
+            console.error('Error al crear el producto:', error);
+            Swal.fire('Error', 'Ha ocurrido un error', 'warning');
+          }
+        );
+  
+      this.archivos = []; // Limpiar el arreglo de archivos
       this.limpiarFormulario();
+    } catch (error) {
+      // Manejar el error si es necesario
+    }
   }
+  
+  // Resto del código del componente...
+  
   
   
 
@@ -272,41 +273,7 @@ getBase64Image(base64Data: string): string {
   }
 
   
-  actualizarProductos(productoObj: Productos) {
-
-    Swal.fire({
-      title: '¿Desea modificar los campos?',
-          showDenyButton: true,
-          showCancelButton: true,
-          confirmButtonText: 'SI',
-          denyButtonText: `NO`,
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-    //COLOCAR EL CODIGO A EJECUTAR
-    this.productoService.actualizar(productoObj)
-      .subscribe(data => {
-        this.producto = data;
-        Swal.fire({
-          title: 'Producto Modificada éxitosamente',
-          icon: 'success',
-          iconColor :'#17550c',
-          color: "#0c3255",
-          confirmButtonColor:"#0c3255",
-          background: "#63B68B",
-        })
-        //alert("Se Actualiazo");
-        this.router.navigate(['/productos'])
-      });
-            //FIN DEL CODIGO A EJECUTAR
-        //Swal.fire('Modificado!', '', 'success')
-      } else if (result.isDenied) {
-        Swal.fire('Ningun campo modificado', '', 'info')
-      }
-    })
-
-    
-  }
+  
 
   editDatos(productoObj: Productos) {
     // this.crite.id_criterio = criterio.id_criterio
@@ -331,62 +298,25 @@ getBase64Image(base64Data: string): string {
         Swal.fire('Operacion exitosa!', 'El registro se actualizo con exito', 'success')
       });
   }
-
   enviarSeleccionados() {
-    // Filtrar los productos seleccionados y almacenarlos en productosSeleccionados
     this.productosSeleccionados = this.producto.filter((item) => item.seleccionado);
-    // Navegar al componente OtroComponente y enviar los productos seleccionados como parámetro
-    this.router.navigate(['/catalogo-productos'], { state: { seleccionados: this.productosSeleccionados } });
+    // Guardar los productos seleccionados en el servicio
+    this.productoService.setProductosSeleccionados(this.productosSeleccionados);
+    console.log(this.productosSeleccionados+"enviandooooo")
+    // Navegar al componente OtroComponente
+    this.router.navigate(['/catalogo-productos']);
   }
-  guardarDatosEnAPI1(): void {
-    const catalogos: Catalogo[] = [];
 
- 
-
+  listaCategoria() {
+    this.categoriaService.listaCategoria()
+    .subscribe(data => {
+      this.categorias = data;
      
-    this.productosSeleccionados = this.producto.filter((item) => item.seleccionado);
-    // Navegar al componente OtroComponente y enviar los productos seleccionados como parámetro
-   
-            this.dataSource.forEach((listacata: any) => {
-              const catalogo: Catalogo = new Catalogo();
-
-              // Asigna los valores correspondientes a las propiedades de Ponderacion
-              catalogo.productoclas=listacata.id_producto;
-             
-              catalogos.push(catalogo);
-
-            });
-            this.serviceCatalogo.guardarPonderacionLista(catalogos).subscribe(
-              (response: any) => {
-                // Manejar la respuesta de la API si es necesario
-                console.log(response);
-                Swal.fire({
-                  title: 'Catalogo guardado exitosamente',
-                  icon: 'success',
-                  iconColor: '#17550c',
-                  color: "#0c3255",
-                  confirmButtonColor: "#0c3255",
-                  background: "#63B68B",
-                });
-
-                this.router.navigate(['/catalogo-productos'], { state: { seleccionados: this.productosSeleccionados } });
-              },
-              (error: any) => {
-                // Manejar el error si ocurre alguno
-                console.error(error);
-              }
-            );
-
-
-          
-        
-        (error: any) => {
-          // Manejar el error si ocurre alguno al obtener los registros por fecha
-          console.error(error);
-        }
- 
+    }) 
+    console.log(this.categorias+"listaaaa Categoria")
     
-  }
 
+
+}
   
 }

@@ -4,6 +4,9 @@ import { ProductosComponent } from './admin/productos/productos/productos.compon
 import { EmpresaComponent } from './admin/empresa/empresa/empresa.component';
 import { CategoriaComponent } from './admin/categoria/categoria.component';
 import { CatalogoComponent } from './admin/catalogo/catalogo.component';
+import { ImprimircatalogoComponent } from './admin/catalogo/imprimircatalogo/imprimircatalogo.component';
+import { ImprimircataComponent } from './admin/imprimircata/imprimircata.component';
+
 
 const routes: Routes = [
  { 
@@ -21,6 +24,18 @@ const routes: Routes = [
 { 
   path: 'catalogo-productos',
   component: CatalogoComponent,
+  pathMatch: 'full',
+
+},
+{ 
+  path: 'imprimir-catalogo',
+  component: ImprimircatalogoComponent,
+  pathMatch: 'full',
+
+},
+{ 
+  path: 'imprimir-cata',
+  component: ImprimircataComponent,
   pathMatch: 'full',
 
 },
