@@ -47,6 +47,7 @@
               <input type="checkbox" [(ngModel)]="item.seleccionado" />
             </td>
             <td class="custom-td">{{ item.codigo_producto }}</td>
+            <td class="custom-td">{{ item.nombre_producto }}</td>
             <td class="custom-td">
               <div class="imagen-contenedor">
                 <img
@@ -60,7 +61,7 @@
               </div>
             </td>
 
-            <td class="custom-td">{{ item.nombre_producto }}</td>
+           
             <td class="custom-td">{{ item.unidad_caja }}</td>
             <td class="custom-td">{{ item.precio_distribuidor }}</td>
             <td class="custom-td">{{ item.precio_mayor3 }}</td>
@@ -77,7 +78,7 @@
                   style="margin-right: 5%"
                   data-bs-toggle="modal"
                   data-bs-target="#materiaModal"
-                  (click)="editDatos(item)"
+                  (click)="editDatosCuali(item)"
                 >
                   EDITAR
                   <i class="fa fa-edit"></i>
@@ -115,6 +116,7 @@
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
+    (hidden.bs.modal)="limpiarSeleccionCategoria()"
   >
     <div class="modal-dialog">
       <div class="modal-content">
@@ -132,6 +134,31 @@
 
         <div class="modal-body">
           <form [formGroup]="frmProducto" (ngSubmit)="nuevo1()" id="formulario">
+            <div>
+              <label for=" codigo_producto">Codigo Producto:</label>
+              <input
+                class="form-control"
+                formControlName="codigo_producto"
+                type="text"
+                id=" codigo_producto"
+                name=" codigo_producto"
+                style="margin-bottom: 10px"
+              />
+              <div
+                class="alert alert-danger"
+                *ngIf="
+                  frmProducto.controls['codigo_producto'].invalid &&
+                  frmProducto.controls['codigo_producto'].touched ">
+                <div
+                  *ngIf="
+                    frmProducto.controls[' codigo_producto'].hasError('required')" >
+                  Debe ingresar un nombre
+                </div>
+              </div>
+            </div>
+
+
+
             <div>
               <label for="nombre">Nombre:</label>
               <input
@@ -307,26 +334,38 @@
           </div>
 
          CATEGORIA 
-         <div class="scrollable-container">
-          <div *ngFor="let categoria of categorias">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                [id]="categoria.id_categoria"
-                [value]="categoria"
-                [formControlName]="categoria.nombre_categoria"
-                [checked]="selectedCategory === categoria"
-                (click)="selectedCategory = categoria"
-              >
-              <label
-                class="form-check-label"
-                [for]="categoria.id_categoria"
-                [class.selected]="selectedCategory === categoria"
-              >{{ categoria.nombre_categoria }}</label>
-            </div>
-          </div>
-        </div>
+ <!-- CATEGORIA -->
+<div class="scrollable-container">
+  <div *ngFor="let categoria of categorias">
+    <div class="form-check">
+      <!-- <input
+        class="form-check-input"
+        type="radio"
+        [id]="categoria.id_categoria"
+        [value]="categoria"
+        [formControlName]="categoria.id_categoria.toString()"
+        [checked]="selectedCategory === categoria"
+        (click)="selectedCategory = categoria"
+      > -->
+      <input
+  class="form-check-input"
+  type="radio"
+  [id]="categoria.id_categoria"
+  [value]="categoria.id_categoria"
+  [formControlName]="categoria.nombre_categoria"
+  [checked]="selectedCategory && selectedCategory.id_categoria === categoria.id_categoria"
+  (click)="selectedCategory = categoria"
+>
+
+      <label
+        class="form-check-label"
+        [for]="categoria.id_categoria"
+        [class.selected]="selectedCategory === categoria"
+      >{{ categoria.nombre_categoria }}</label>
+    </div>
+  </div>
+</div>
+
         
         
         
@@ -385,11 +424,14 @@
             *ngIf="produ.id_producto"
             data-dismiss="modal"
             data-bs-dismiss="modal"
+            form="formulario"
             (click)="actualizarP()"
             [disabled]="!frmProducto.valid"
           >
             Actualizar
           </button>
+
+          
         </div>
       </div>
     </div>

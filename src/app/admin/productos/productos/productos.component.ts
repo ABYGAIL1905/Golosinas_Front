@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,7 +19,8 @@ import { CategoriaService } from 'src/app/service/categoria.service';
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.component.html',
-  styleUrls: ['./productos.component.css']
+  styleUrls: ['./productos.component.css'],
+
 })
 export class ProductosComponent implements OnInit{
   frmProducto: FormGroup;
@@ -52,16 +53,18 @@ export class ProductosComponent implements OnInit{
     private categoriaService:CategoriaService
     ) { 
       this.frmProducto = fb.group({
-        //codigo_producto: ['', Validators.required],
-       foto_producto: ['', [Validators.required]],
+      codigo_producto: ['', Validators.required],
         nombre_producto: ['', [Validators.required]],
+       foto_producto: ['', [Validators.required]],
+        
         unidad_caja: ['', [Validators.required]],
         precio_distribuidor: ['', [Validators.required]],
         precio_mayor3: ['', [Validators.required]],
         precio_detallista: ['', [Validators.required]],
         pvp: ['', [Validators.required]],
-        estado_producto: ['', [Validators.required]],
-        categoria: ['', [Validators.required]]
+        categoria: ['', [Validators.required]],
+        estado_producto: ['', [Validators.required]]
+        
         
     
       })
@@ -84,6 +87,7 @@ this.categorias.forEach(categoria => {
   ngOnInit(): void {
     this.listaProducto();
     this.listaCategoria();
+    //this.inicializaractualizar();
   }
 
   extraerBase64 = async ($event: any) => {
@@ -188,6 +192,7 @@ getBase64Image(base64Data: string): string {
     }
   
     try {
+      this.produ. codigo_producto = this.frmProducto.value.codigo_producto;
       this.produ.nombre_producto = this.frmProducto.value.nombre_producto;
       this.produ.unidad_caja = this.frmProducto.value.unidad_caja;
       this.produ.precio_distribuidor = this.frmProducto.value.precio_distribuidor;
@@ -276,21 +281,108 @@ getBase64Image(base64Data: string): string {
   
 
   editDatos(productoObj: Productos) {
-    // this.crite.id_criterio = criterio.id_criterio
-    // this.crite.nombre = criterio.nombre
-    // this.crite.descripcion = criterio.descripcion
     this.produ = productoObj;
-    this.frmProducto = new FormGroup({
-      foto_producto: new FormControl(productoObj.foto_producto),
-      nombre_producto: new FormControl(productoObj.nombre_producto)
+
+    this.frmProducto.patchValue({
+      codigo_producto:productoObj.codigo_producto,
+      nombre_producto: productoObj.nombre_producto,
+      foto_producto: productoObj.foto_producto,
+      unidad_caja: productoObj.unidad_caja,
+      precio_distribuidor: productoObj.precio_distribuidor,
+      precio_mayor3: productoObj.precio_mayor3,
+      precio_detallista: productoObj.precio_detallista,
+      pvp: productoObj.precio_venta_publico,
+      estado_producto: productoObj.estado_producto
+      
+      
+    });
+    console.log('Editando:', productoObj)
+    
+    // this.frmProducto = new FormGroup({
+    //   nombre_producto: new FormControl(productoObj.nombre_producto),
+    //   foto_producto: new FormControl(productoObj.foto_producto),
+    //   unidad_caja: new FormControl(productoObj.unidad_caja),
+     
+     
+    
+      
       
       
 
+    // });
+  }
+  editDatosCuali(cualiN: Productos) {
+    this.produ = cualiN;
+    this.guardadoExitoso = false;
+  
+    this.frmProducto = new FormGroup({
+      codigo_producto: new FormControl(cualiN.codigo_producto),
+      nombre_producto: new FormControl(cualiN.nombre_producto),
+      foto_producto: new FormControl(''), // Mantén esto vacío por ahora
+      unidad_caja: new FormControl(cualiN.unidad_caja),
+      precio_distribuidor: new FormControl(cualiN.precio_distribuidor),
+      precio_mayor3: new FormControl(cualiN.precio_mayor3),
+      precio_detallista: new FormControl(cualiN.precio_detallista),
+      pvp: new FormControl(cualiN.precio_venta_publico),
+      estado_producto: new FormControl(cualiN.estado_producto),
+    });
+    console.log('Editando:', cualiN)
+    // Cargar la imagen como base64 y asignarla al formulario
+    this.loadProductImage(cualiN.foto_producto);
+  
+   // Establecer el valor correcto del control de categoría
+    this.categorias.forEach(categoria => {
+      if (categoria.id_categoria === cualiN.categoria?.id_categoria) {
+        this.frmProducto.get(categoria.id_categoria.toString())?.setValue(true);
+      } else {
+        this.frmProducto.get(categoria.id_categoria.toString())?.setValue(false);
+      }
     });
   }
-  actualizarP() {
-    this.produ.nombre_producto = this.frmProducto.value.nombre_producto;
-    this.produ.foto_producto = this.frmProducto.value.foto_producto;
+  
+  loadProductImage(imageBase64: string) {
+    if (imageBase64) {
+      const img = new Image();
+      img.src = 'data:image/jpeg;base64,' + imageBase64;
+      img.onload = () => {
+        // Cuando la imagen se cargue correctamente, asignarla al formulario
+        this.frmProducto.get('foto_producto')?.setValue(img.src);
+      };
+    }
+  }
+
+  limpiarSeleccionCategoria() {
+    this.selectedCategory = null;
+    this.archivos = []; // Limpiar el arreglo de archivos
+      this.limpiarFormulario();
+    
+  }
+  
+  
+  
+ async actualizarP() {
+  try {
+    if (this.archivos.length > 0) {
+      this.produ.foto_producto = await this.convertToBase64(this.archivos[0]);
+    }
+  } catch (error) {
+    console.error('Error al convertir la imagen a Base64:', error);
+    return;
+  }
+  this.produ.nombre_producto = this.frmProducto.value.nombre_producto;
+      this.produ.unidad_caja = this.frmProducto.value.unidad_caja;
+      this.produ.precio_distribuidor = this.frmProducto.value.precio_distribuidor;
+      this.produ.precio_mayor3 = this.frmProducto.value.precio_mayor3;
+      this.produ.precio_detallista = this.frmProducto.value.precio_detallista;
+      this.produ.precio_venta_publico = this.frmProducto.value.pvp;
+  
+      const formData = this.frmProducto.value;
+      if (this.selectedCategory) {
+        this.produ.categoria = this.selectedCategory; // Asignar la categoría al producto
+      }
+  
+      this.produ.estado_producto = this.frmProducto.value.estado_producto;
+    
     this.productoService.actualizar(this.produ)
       .subscribe(response => {
         this.produ = new Productos();

@@ -40,4 +40,7 @@ ng update @angular/core@latest
 # Para imprimir 
 npm i jspdf --save
 
+npm install @ng-bootstrap/ng-bootstrap
+
+
 
